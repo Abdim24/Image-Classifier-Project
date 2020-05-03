@@ -26,6 +26,29 @@ parser.add_argument('--topk_val', type = int,  help = 'to print out the top K cl
 parser.add_argument('--json_file', type = str,  help = 'load a JSON file that maps the class values to other category names')
 parser.add_argument('--GPU', type = str,  help = 'Using GPU')
 
+args = parser.parse_args()
+image_path = args.dir
+
+if args.topk_val:
+    topk = args.topk_val
+else: 
+    topk = 5
+
+
+# Loading JSON file 
+if args.json_file:  
+    with open('args.json_file', 'r') as f:
+        cat_to_name = json.load(f)
+else: 
+    with open('cat_to_name.json', 'r') as f:
+        cat_to_name = json.load(f)
+
+# selecting which device to run commands
+if args.GPU == 'GPU':
+    device = 'cuda'
+else:
+    device = 'cpu'
+
 
 #Loading the checkpoint from the training script 
 def load_checkpoint(filepath):
@@ -161,28 +184,6 @@ def predict(image_path, model, topk, device):
     
     return probs, classes
         
-args = parser.parse_args()
-image_path = args.dir
-
-if args.topk_val:
-	topk =args.topk_val
-else: 
-    topk=5,
-
-
-# Loading JSON file 
-if args.json_file:  
-	with open('args.json_file', 'r') as f:
-	    cat_to_name = json.load(f)
-else: 
-	with open('cat_to_name.json', 'r') as f:
-	    cat_to_name = json.load(f)
-
-# selecting which device to run commands
-if args.GPU == 'GPU':
-	device = 'cuda'
-else:
-	device = 'cpu'
 
 model = load_checkpoint('checkpoint.pth')
 
